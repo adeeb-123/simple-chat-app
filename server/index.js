@@ -1,11 +1,55 @@
-import { Server } from "socket.io";
+const express = require("express")
+const http = require('http')
+const Server = require("socket.io").Server
+const app = express()
 
-const io = new Server(3001)
 
-io.on('connection', (socket) => {
-    socket.emit('Welcome', 'Welcome to the channel')
+const server = http.createServer(app)
 
-    socket.on("msg", (data) => {
-        console.log("msg fron client", data)
+const io = new Server(server, {
+    cors: {
+        origin: "*"
+    }
+})
+
+// when client connects to server
+io.on("connection", (socket) => {
+    console.log('We are Connected')
+
+    socket.on("chat", (chat) => {
+        io.emit('chat', chat)
+    })
+
+    socket.on('disconnect', () => {
+        console.log('disconnected')
     })
 })
+
+server.listen(3001, () => {
+    console.log("Listening at 3001")
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// https://mat6tube.com/watch/-193744863_456240223
